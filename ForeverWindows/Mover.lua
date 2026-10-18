@@ -31,6 +31,7 @@ local original = {}       -- [frame] = the game's anchor before we first moved i
 local pendingApply = {}   -- [frame] = true: protected, waits for combat to end
 local pendingInstall = {} -- [name] = true: protected, waits for combat to end
 local warned = {}         -- [frame] = true: the combat message was shown once
+local pendingStop = {}    -- [frame] = "save" or "drop": a drag a fight cut into, ended after it
 local applying = false
 
 local function DB() return ns.DB() end
@@ -61,7 +62,8 @@ end
 local function Apply(frame)
 	local db = DB()
 	local pos = db and db.enabled and db.positions[names[frame]]
-	if not pos or moving[frame] or Maximized(frame) then return end
+	if type(pos) ~= "table" or type(pos[3]) ~= "number" or type(pos[4]) ~= "number" then return end
+	if moving[frame] or Maximized(frame) then return end
 	if Blocked(frame) then
 		pendingApply[frame] = true
 		return
@@ -99,23 +101,36 @@ local function OnDragStart(frame)
 	frame:StartMoving()
 end
 
-local function OnDragStop(frame)
-	if not moving[frame] then return end
+local function EndDrag(frame, save)
 	frame:StopMovingOrSizing()
 	moving[frame] = nil
 	-- the game would also keep its own copy of the spot; ours is enough
 	pcall(frame.SetUserPlaced, frame, false)
-	Save(frame)
+	if save then Save(frame) end
 	Apply(frame)
 	ns.Notify()
+end
+
+-- A protected window can't be let go of in combat (a fight that started
+-- mid-drag): it is let go of right after the fight.
+local function OnDragStop(frame)
+	if not moving[frame] then return end
+	if Blocked(frame) then
+		pendingStop[frame] = "save"
+		return
+	end
+	EndDrag(frame, true)
 end
 
 -- Closed while being dragged (Esc, the loot ran out, the vendor walked off):
 -- end the drag without saving, or the window would stay unmanaged.
 local function OnHide(frame)
 	if not moving[frame] then return end
-	moving[frame] = nil
-	pcall(frame.StopMovingOrSizing, frame)
+	if Blocked(frame) then
+		pendingStop[frame] = pendingStop[frame] or "drop"
+		return
+	end
+	EndDrag(frame, false)
 end
 
 local function Install(name)
@@ -160,6 +175,10 @@ function ns.Scan()
 end
 
 function ns.AfterCombat()
+	for frame, what in pairs(pendingStop) do
+		pendingStop[frame] = nil
+		if moving[frame] then EndDrag(frame, what == "save") end
+	end
 	for name in pairs(pendingInstall) do Install(name) end
 	for frame in pairs(pendingApply) do
 		pendingApply[frame] = nil
@@ -167,19 +186,28 @@ function ns.AfterCombat()
 	end
 end
 
--- Forget one window's spot. If it is open, it goes back to where the game
--- had it; otherwise the game places it on the next open anyway.
+-- The game's own anchor back. Done for closed windows too: some (the Esc
+-- menu) are never placed again by the game.
+local function Unplace(frame)
+	local points = original[frame]
+	if not points or #points == 0 or Blocked(frame) or moving[frame] then return end
+	applying = true
+	frame:ClearAllPoints()
+	for _, p in ipairs(points) do frame:SetPoint(unpack(p)) end
+	applying = false
+end
+
+-- Forget one window's spot; it goes back to where the game had it.
 function ns.ResetOne(name, quiet)
 	DB().positions[name] = nil
 	local frame = frames[name]
-	local points = frame and original[frame]
-	if points and frame:IsShown() and not Blocked(frame) and #points > 0 then
-		applying = true
-		frame:ClearAllPoints()
-		for _, p in ipairs(points) do frame:SetPoint(unpack(p)) end
-		applying = false
-	end
+	if frame then Unplace(frame) end
 	if not quiet then ns.Notify() end
+end
+
+-- The addon switched off: every moved window goes back to the game's spot.
+local function UnplaceAll()
+	for frame in pairs(names) do Unplace(frame) end
 end
 
 -- After settings change: a window that is open now follows at once.
@@ -188,4 +216,7 @@ function ns.ApplyAll()
 		if frame:IsShown() then Apply(frame) end
 	end
 end
-ns.OnChange(function() ns.ApplyAll() end)
+ns.OnChange(function()
+	local db = DB()
+	if db and not db.enabled then UnplaceAll() else ns.ApplyAll() end
+end)

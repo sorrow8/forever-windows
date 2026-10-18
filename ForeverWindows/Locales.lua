@@ -19,7 +19,7 @@ local L = {
 	LOCK_HELP = "Windows keep their spots and can't be dragged until you unlock them.",
 
 	TRACKER = "Hide the quest tracker",
-	TRACKER_HELP = "The list of quests and objectives at the right edge of the screen stays hidden. Quest progress is still in the quest log; the countdown of timed quests is hidden too, as it lives in the tracker. In a fight the tracker only turns invisible and is hidden once the fight ends.",
+	TRACKER_HELP = "The list of quests and objectives at the right edge of the screen stays hidden. Quest progress is still in the quest log; the countdown of timed quests is hidden too, as it lives in the tracker. In a fight the tracker only turns invisible (its lines can still be clicked) and is hidden once the fight ends.",
 
 	SAVED = "Moved windows",
 	SAVED_NONE = "None yet. Open any window and drag it.",

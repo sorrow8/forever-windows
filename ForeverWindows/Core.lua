@@ -83,7 +83,20 @@ function events.ADDON_LOADED(name)
 		for k, v in pairs(DEFAULTS) do
 			if db[k] == nil then db[k] = v end
 		end
-		db.positions = db.positions or {}
+		-- damaged or foreign saved data must not break a window
+		if type(db.positions) ~= "table" then db.positions = {} end
+		for name, pos in pairs(db.positions) do
+			if type(name) ~= "string" or type(pos) ~= "table" or type(pos[1]) ~= "string" or type(pos[2]) ~= "string"
+				or type(pos[3]) ~= "number" or type(pos[4]) ~= "number" then
+				db.positions[name] = nil
+			end
+		end
+		local win = db.win
+		if win ~= nil and not (type(win) == "table" and type(win[1]) == "string" and type(win[2]) == "string"
+			and type(win[3]) == "number" and type(win[4]) == "number") then
+			db.win = nil
+		end
+		if db.mode ~= "anywhere" and db.mode ~= "shift" then db.mode = DEFAULTS.mode end
 		ns.ApplyLocale(db.language)
 	end
 	-- Blizzard loads many windows on demand; look for new ones each time.

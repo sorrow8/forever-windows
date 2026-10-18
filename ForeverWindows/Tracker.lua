@@ -51,6 +51,15 @@ local function Hook(tracker)
 			HideTracker(self)
 		end
 	end)
+	-- the game fades the right side of the screen back in (after Alt+Z): stay invisible
+	local fixing = false
+	hooksecurefunc(tracker, "SetAlpha", function(self, alpha)
+		if dimmed and not fixing and alpha ~= 0 then
+			fixing = true
+			self:SetAlpha(0)
+			fixing = false
+		end
+	end)
 	-- the game hid it itself (nothing tracked): not ours to show again later.
 	-- The method, not OnHide: the game also hides a tracker that is already hidden.
 	hooksecurefunc(tracker, "Hide", function()

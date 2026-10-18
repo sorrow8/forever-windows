@@ -1,5 +1,10 @@
 # 1.1.1
 
+- A protected window whose drag a fight cut into is let go of right after the fight, instead of the game blocking the addon.
+- Reset and turning the addon off put windows back at the game's spot even when they are closed (the Esc menu was left where it had been moved).
+- The quest tracker stays invisible in a fight even after Alt+Z.
+- A drag cut short by a window closing no longer leaves the window flagged as placed by hand.
+- Damaged saved data (a broken spot, an unknown drag mode) is cleaned up at login instead of breaking a window.
 - The hidden quest tracker no longer comes back during a fight when quest progress updates: in combat it turns invisible, and it is hidden once the fight ends.
 - Turning the option off no longer shows an empty tracker the game had hidden itself.
 - `/fw tracker` says so when the addon is off instead of claiming the tracker is hidden.
