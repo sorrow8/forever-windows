@@ -59,6 +59,7 @@ ns.LOCALES.ruRU = {
 	W_TalentFrame = "Таланты",
 	W_PlayerTalentFrame = "Таланты",
 	W_FriendsFrame = "Друзья",
+	W_SocialUIFrame = "Друзья",
 	W_CommunitiesFrame = "Гильдия и сообщества",
 	W_CollectionsJournal = "Коллекции",
 	W_PVEFrame = "Поиск группы",

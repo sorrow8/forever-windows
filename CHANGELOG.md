@@ -1,6 +1,7 @@
 # 1.1.0
 
 - Hide the quest tracker: a switch in the window (or `/fw tracker`) keeps the list of quests and objectives at the right edge of the screen hidden. In a fight the change waits for its end.
+- The friends window shows its name in the list of moved windows instead of "SocialUI".
 
 # 1.0.1
 

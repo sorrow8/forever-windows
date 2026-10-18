@@ -65,6 +65,7 @@ local L = {
 	W_TalentFrame = "Talents",
 	W_PlayerTalentFrame = "Talents",
 	W_FriendsFrame = "Social",
+	W_SocialUIFrame = "Social",
 	W_CommunitiesFrame = "Guild and communities",
 	W_CollectionsJournal = "Collections",
 	W_PVEFrame = "Group finder",
