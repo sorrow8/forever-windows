@@ -92,9 +92,12 @@ function events.PLAYER_LOGIN()
 	ns.loggedIn = true
 	ns.Scan()
 	if ns.InitUI then ns.InitUI() end
+	-- the first login explains what changed, every later one says how to open the settings
 	if not db.welcomed then
 		db.welcomed = true
 		ns.Print(L.MSG_WELCOME)
+	else
+		ns.Print(L.MSG_LOADED)
 	end
 end
 

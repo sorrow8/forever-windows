@@ -27,6 +27,7 @@ local L = {
 	LANG_AUTO = "Auto",
 
 	MSG_WELCOME = "installed. Drag any window to move it, it will open there from now on. Settings: type |cffebbd61/fw|r",
+	MSG_LOADED = "loaded. Settings: type |cffebbd61/fw|r",
 	MSG_ON = "on.",
 	MSG_OFF = "off, windows open at the game's own spots.",
 	MSG_RESET = "all window positions reset.",
