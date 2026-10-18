@@ -1,15 +1,18 @@
 # Forever Windows
 
+Game windows always open at the same spot, often right where you don't want them, and moving them is not possible by default.
+
+Forever Windows lets you drag any game window where you like, and it opens there from then on, without jumping. Built for **World of Warcraft: Forever**.
+
 ![Settings window and moved windows](docs/screenshot.png)
 
-Drag any game window where you want it, for **World of Warcraft: Forever**. It opens there from now on, right away, without first showing up at the default spot.
-
-- Character, bags, map, merchant, quest and NPC dialogues, trainer, mail, bank, professions and every other panel window
+- Character, bags, map, merchants, quest and NPC dialogues, trainers, mail, bank, professions and more
 - Just drag, or Shift + drag so nothing moves by accident
-- Lock positions when you are done
+- Lock positions when you're done
 - A list of moved windows, each with its own reset
-- Windows the game protects in combat move into place right after the fight
-- Hide the quest tracker at the right edge of the screen if you don't need it (timed quest countdowns live there too)
+- Optional: hide the quest tracker
+- Protected windows move into place right after combat
+- English and Russian
 - Settings: `/fw`
 
 **Install:** unzip the `ForeverWindows` folder into `World of Warcraft/_forever_/Interface/AddOns/` and restart the game.
