@@ -24,7 +24,6 @@ local L = {
 	RESET_ONE_HELP = "This window opens at the game's own spot again.",
 	RESET_ALL = "Reset all",
 	CMD_HINT = "Open this window:",
-	LANG_AUTO = "Auto",
 
 	MSG_WELCOME = "installed. Drag any window to move it, it will open there from now on. Settings: type |cffebbd61/fw|r",
 	MSG_LOADED = "loaded. Settings: |cffebbd61/fw|r",
@@ -69,7 +68,6 @@ local L = {
 	W_CalendarFrame = "Calendar",
 	W_AchievementFrame = "Achievements",
 	W_DressUpFrame = "Dressing room",
-	W_LootFrame = "Loot",
 	W_TaxiFrame = "Flight master",
 	W_EncounterJournal = "Adventure guide",
 	W_MacroFrame = "Macros",

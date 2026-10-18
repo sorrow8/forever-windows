@@ -543,6 +543,8 @@ function ns.RebuildWindow()
 end
 
 -- The game's Options: a page with one button that opens the window.
+local options
+
 local function RegisterOptions()
 	if not (Settings and Settings.RegisterCanvasLayoutCategory and Settings.RegisterAddOnCategory) then return end
 	local panel = CreateFrame("Frame")
@@ -559,6 +561,16 @@ local function RegisterOptions()
 	button:SetPoint("TOPLEFT", text, "BOTTOMLEFT", 0, -14)
 	local category = Settings.RegisterCanvasLayoutCategory(panel, L.TITLE)
 	Settings.RegisterAddOnCategory(category)
+	options = { text = text, button = button }
+end
+
+-- After a language change the Options page follows too (its list entry is
+-- the addon's name, the same in every language).
+function ns.RefreshOptions()
+	if not options then return end
+	options.text:SetText(L.OPTIONS_TEXT)
+	options.button.text:SetText(L.OPTIONS_OPEN)
+	options.button:SetWidth(options.button.text:GetStringWidth() + 28)
 end
 
 function ns.InitUI()

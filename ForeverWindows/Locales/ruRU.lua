@@ -19,7 +19,6 @@ ns.LOCALES.ruRU = {
 	RESET_ONE_HELP = "Окно снова будет открываться на месте игры.",
 	RESET_ALL = "Сбросить все",
 	CMD_HINT = "Открыть это окно:",
-	LANG_AUTO = "Авто",
 
 	MSG_WELCOME = "установлен. Перетащи любое окно, и дальше оно будет открываться там. Настройки: набери |cffebbd61/fw|r",
 	MSG_LOADED = "загружен. Настройки: |cffebbd61/fw|r",
@@ -63,7 +62,6 @@ ns.LOCALES.ruRU = {
 	W_CalendarFrame = "Календарь",
 	W_AchievementFrame = "Достижения",
 	W_DressUpFrame = "Примерочная",
-	W_LootFrame = "Добыча",
 	W_TaxiFrame = "Распорядитель полётов",
 	W_EncounterJournal = "Путеводитель",
 	W_MacroFrame = "Макросы",

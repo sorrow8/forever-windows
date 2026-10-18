@@ -51,6 +51,7 @@ function ns.SetLanguage(code)
 	db.language = code
 	ns.ApplyLocale(code)
 	if ns.RebuildWindow then ns.RebuildWindow() end
+	if ns.RefreshOptions then ns.RefreshOptions() end
 end
 
 -- Settings back to defaults; the saved window spots stay.

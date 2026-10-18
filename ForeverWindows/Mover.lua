@@ -12,10 +12,16 @@ local L = ns.L
 -- Some windows are protected and cannot be moved by an addon in combat.
 -- Those are left to the game during a fight and put in place right after.
 --
--- Nothing is ever written onto a Blizzard frame; all state lives in the
--- tables below, keyed by frame, so the game's own code is not tainted.
+-- Spots are kept in UIParent units, not in the window's own scale: the game
+-- shrinks some windows on the fly (the bags while the bank is open, panels
+-- that don't fit the screen), and a spot in the window's own units would
+-- drift with every such change.
+--
+-- Windows that Edit Mode positions (the loot window and the like) are left
+-- to Edit Mode. Nothing is ever written onto a Blizzard frame; all state lives
+-- in the tables below, keyed by frame, so the game's own code is not tainted.
 
-local EXTRA = { "ContainerFrameCombinedBags", "LootFrame" }
+local EXTRA = { "ContainerFrameCombinedBags" }
 for i = 1, 13 do EXTRA[#EXTRA + 1] = "ContainerFrame" .. i end
 
 local frames = {}         -- [name] = frame
@@ -33,6 +39,17 @@ local function Blocked(frame)
 	return InCombatLockdown() and frame:IsProtected()
 end
 
+-- A maximized window (the big world map) fills the screen on the game's terms.
+local function Maximized(frame)
+	local isMaximized = frame.IsMaximized
+	return type(isMaximized) == "function" and isMaximized(frame) == true
+end
+
+-- window units per UIParent unit
+local function Ratio(frame)
+	return UIParent:GetEffectiveScale() / frame:GetEffectiveScale()
+end
+
 -- The anchor the game gave the window, kept so a reset can put it back.
 local function Capture(frame)
 	if original[frame] then return end
@@ -44,29 +61,32 @@ end
 local function Apply(frame)
 	local db = DB()
 	local pos = db and db.enabled and db.positions[names[frame]]
-	if not pos or moving[frame] then return end
+	if not pos or moving[frame] or Maximized(frame) then return end
 	if Blocked(frame) then
 		pendingApply[frame] = true
 		return
 	end
 	Capture(frame)
+	local ratio = Ratio(frame)
 	applying = true
 	frame:ClearAllPoints()
-	frame:SetPoint(pos[1], UIParent, pos[2], pos[3], pos[4])
+	frame:SetPoint(pos[1], UIParent, pos[2], pos[3] * ratio, pos[4] * ratio)
 	applying = false
 end
 
 local function Save(frame)
 	local left, top = frame:GetLeft(), frame:GetTop()
 	if not (left and top) then return end
-	-- GetLeft/GetTop and SetPoint offsets are both in the frame's own scale.
-	DB().positions[names[frame]] = { "TOPLEFT", "BOTTOMLEFT", left, top }
+	-- GetLeft/GetTop are in the window's own scale; kept in UIParent units
+	local ratio = Ratio(frame)
+	DB().positions[names[frame]] = { "TOPLEFT", "BOTTOMLEFT", left / ratio, top / ratio }
 end
 
 local function OnDragStart(frame)
 	local db = DB()
 	if not db.enabled or db.locked then return end
 	if db.mode == "shift" and not IsShiftKeyDown() then return end
+	if Maximized(frame) then return end
 	if Blocked(frame) then
 		if not warned[frame] then
 			warned[frame] = true
@@ -90,10 +110,20 @@ local function OnDragStop(frame)
 	ns.Notify()
 end
 
+-- Closed while being dragged (Esc, the loot ran out, the vendor walked off):
+-- end the drag without saving, or the window would stay unmanaged.
+local function OnHide(frame)
+	if not moving[frame] then return end
+	moving[frame] = nil
+	pcall(frame.StopMovingOrSizing, frame)
+end
+
 local function Install(name)
 	local frame = _G[name]
 	if type(frame) ~= "table" or not frame.GetObjectType or names[frame] then return end
 	if frame.IsForbidden and frame:IsForbidden() then return end
+	-- Edit Mode places this one (it carries an Edit Mode system)
+	if frame.system ~= nil then return end
 	if Blocked(frame) then
 		pendingInstall[name] = true
 		return
@@ -107,15 +137,19 @@ local function Install(name)
 	frame:HookScript("OnDragStart", OnDragStart)
 	frame:HookScript("OnDragStop", OnDragStop)
 	frame:HookScript("OnShow", Apply)
-	hooksecurefunc(frame, "SetPoint", function(self)
+	frame:HookScript("OnHide", OnHide)
+	local function Again(self)
 		if not applying then Apply(self) end
-	end)
+	end
+	hooksecurefunc(frame, "SetPoint", Again)
+	-- a new scale moves the window's spot on screen; put it back
+	hooksecurefunc(frame, "SetScale", Again)
 
 	if frame:IsShown() then Apply(frame) end
 end
 
--- Every window the game manages as a panel, plus the bags and the loot
--- window. Called at login and whenever a Blizzard part loads on demand.
+-- Every window the game manages as a panel, plus the bags. Called at login
+-- and whenever a Blizzard part loads on demand.
 function ns.Scan()
 	if UIPanelWindows then
 		for name, info in pairs(UIPanelWindows) do
