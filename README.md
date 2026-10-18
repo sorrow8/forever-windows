@@ -1,5 +1,7 @@
 # Forever Windows
 
+![Settings window and moved windows](docs/screenshot.png)
+
 Drag any game window where you want it, for **World of Warcraft: Forever**. It opens there from now on, right away, without first showing up at the default spot.
 
 - Character, bags, map, merchant, quest and NPC dialogues, trainer, mail, bank, professions and every other panel window
