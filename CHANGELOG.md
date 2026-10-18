@@ -1,3 +1,7 @@
+# 1.1.2
+
+- Moved windows are marked so the game keeps no copy of their spot of its own (SetDontSavePosition), even when a drag is cut short.
+
 # 1.1.1
 
 - A protected window whose drag a fight cut into is let go of right after the fight, instead of the game blocking the addon.

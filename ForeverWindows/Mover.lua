@@ -147,6 +147,8 @@ local function Install(name)
 	names[frame], frames[name] = name, frame
 
 	frame:SetMovable(true)
+	-- the game must not keep its own copy of the spot (layout-local.txt); ours is enough
+	if frame.SetDontSavePosition then pcall(frame.SetDontSavePosition, frame, true) end
 	frame:EnableMouse(true)
 	frame:RegisterForDrag("LeftButton")
 	frame:HookScript("OnDragStart", OnDragStart)

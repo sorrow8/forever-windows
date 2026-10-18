@@ -3,7 +3,7 @@
 ## Notes: Drag any game window where you want it; it opens there from now on, without jumping. Settings window: /fw
 ## Notes-ruRU: Перетащи любое окно игры куда удобно, и дальше оно открывается там, без прыжков. Окно настроек: /fw
 ## Author: sorrow8
-## Version: 1.1.1
+## Version: 1.1.2
 ## SavedVariables: ForeverWindowsDB
 ## IconTexture: Interface\Icons\INV_Misc_Map02
 ## AddonCompartmentFunc: ForeverWindows_OnCompartmentClick
