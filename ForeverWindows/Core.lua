@@ -133,7 +133,11 @@ local function Command(msg)
 		ns.Print(L.MSG_UNLOCKED)
 	elseif cmd == "tracker" then
 		ns.Set("hideTracker", not ns.DB().hideTracker)
-		ns.Print(ns.DB().hideTracker and L.MSG_TRACKER_OFF or L.MSG_TRACKER_ON)
+		if not ns.DB().enabled then
+			ns.Print(L.MSG_TRACKER_ADDON_OFF)
+		else
+			ns.Print(ns.DB().hideTracker and L.MSG_TRACKER_OFF or L.MSG_TRACKER_ON)
+		end
 	elseif cmd == "lang" and (arg == "auto" or ns.LanguageCode(arg)) then
 		ns.SetLanguage(arg ~= "auto" and ns.LanguageCode(arg) or nil)
 	elseif cmd == "reset" then
