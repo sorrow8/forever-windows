@@ -13,6 +13,9 @@ ns.LOCALES.ruRU = {
 	LOCK = "Закрепить окна",
 	LOCK_HELP = "Окна остаются на своих местах, двигать их нельзя, пока не открепишь.",
 
+	TRACKER = "Скрыть трекер заданий",
+	TRACKER_HELP = "Список заданий и целей у правого края экрана не показывается. Прогресс заданий остаётся в журнале заданий. В бою изменение применится после боя.",
+
 	SAVED = "Перемещённые окна",
 	SAVED_NONE = "Пока нет. Открой любое окно и перетащи его.",
 	RESET_ONE = "Сброс",
@@ -28,7 +31,9 @@ ns.LOCALES.ruRU = {
 	MSG_LOCKED = "окна закреплены.",
 	MSG_UNLOCKED = "окна откреплены.",
 	MSG_COMBAT = "это окно защищено в бою, оно встанет на место после боя.",
-	MSG_HELP = "/fw: окно, /fw on, /fw off, /fw lock, /fw unlock, /fw reset, /fw lang auto/en/ru",
+	MSG_TRACKER_OFF = "трекер заданий скрыт.",
+	MSG_TRACKER_ON = "трекер заданий показан.",
+	MSG_HELP = "/fw: окно, /fw on, /fw off, /fw lock, /fw unlock, /fw tracker, /fw reset, /fw lang auto/en/ru",
 
 	OPTIONS_OPEN = "Открыть окно настроек",
 	OPTIONS_TEXT = "Все настройки находятся в собственном окне аддона.",

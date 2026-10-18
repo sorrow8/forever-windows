@@ -7,6 +7,7 @@ Drag any game window where you want it, for **World of Warcraft: Forever**. It o
 - Lock positions when you are done
 - A list of moved windows, each with its own reset
 - Windows the game protects in combat move into place right after the fight
+- Hide the quest tracker at the right edge of the screen if you don't need it
 - Settings: `/fw`
 
 **Install:** unzip the `ForeverWindows` folder into `World of Warcraft/_forever_/Interface/AddOns/` and restart the game.

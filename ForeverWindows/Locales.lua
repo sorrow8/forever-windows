@@ -18,6 +18,9 @@ local L = {
 	LOCK = "Lock positions",
 	LOCK_HELP = "Windows keep their spots and can't be dragged until you unlock them.",
 
+	TRACKER = "Hide the quest tracker",
+	TRACKER_HELP = "The list of quests and objectives at the right edge of the screen stays hidden. Quest progress is still in the quest log. In a fight the change waits for its end.",
+
 	SAVED = "Moved windows",
 	SAVED_NONE = "None yet. Open any window and drag it.",
 	RESET_ONE = "Reset",
@@ -33,7 +36,9 @@ local L = {
 	MSG_LOCKED = "positions locked.",
 	MSG_UNLOCKED = "positions unlocked.",
 	MSG_COMBAT = "this window is protected in combat, it moves into place after the fight.",
-	MSG_HELP = "/fw: window, /fw on, /fw off, /fw lock, /fw unlock, /fw reset, /fw lang auto/en/ru",
+	MSG_TRACKER_OFF = "quest tracker hidden.",
+	MSG_TRACKER_ON = "quest tracker shown.",
+	MSG_HELP = "/fw: window, /fw on, /fw off, /fw lock, /fw unlock, /fw tracker, /fw reset, /fw lang auto/en/ru",
 
 	OPTIONS_OPEN = "Open the settings window",
 	OPTIONS_TEXT = "Every setting lives in the addon's own window.",

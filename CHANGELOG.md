@@ -1,3 +1,7 @@
+# 1.1.0
+
+- Hide the quest tracker: a switch in the window (or `/fw tracker`) keeps the list of quests and objectives at the right edge of the screen hidden. In a fight the change waits for its end.
+
 # 1.0.1
 
 - Window spots no longer drift when the game shrinks a window (the bags while the bank is open, panels that don't fit the screen).

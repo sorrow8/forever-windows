@@ -10,6 +10,7 @@ local DEFAULTS = {
 	enabled = true,
 	mode = "anywhere", -- anywhere | shift
 	locked = false,
+	hideTracker = false, -- the quest tracker at the right edge of the screen
 }
 
 local PREFIX = "|cffebbd61Forever Windows|r: "
@@ -130,6 +131,9 @@ local function Command(msg)
 	elseif cmd == "unlock" then
 		ns.Set("locked", false)
 		ns.Print(L.MSG_UNLOCKED)
+	elseif cmd == "tracker" then
+		ns.Set("hideTracker", not ns.DB().hideTracker)
+		ns.Print(ns.DB().hideTracker and L.MSG_TRACKER_OFF or L.MSG_TRACKER_ON)
 	elseif cmd == "lang" and (arg == "auto" or ns.LanguageCode(arg)) then
 		ns.SetLanguage(arg ~= "auto" and ns.LanguageCode(arg) or nil)
 	elseif cmd == "reset" then

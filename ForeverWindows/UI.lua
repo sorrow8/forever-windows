@@ -403,6 +403,8 @@ local function Refresh()
 	widgets.mode:SetActive(enabled)
 	widgets.lock.switch:SetChecked(db.locked)
 	widgets.lock:SetActive(enabled)
+	widgets.tracker.switch:SetChecked(db.hideTracker)
+	widgets.tracker:SetActive(enabled)
 	LayoutList()
 end
 ns.RefreshUI = Refresh
@@ -475,6 +477,8 @@ local function Build()
 	y = y - h - 16
 
 	widgets.lock, h = ToggleRow(win, y, L.LOCK, L.LOCK_HELP, "locked")
+	y = y - h - 10
+	widgets.tracker, h = ToggleRow(win, y, L.TRACKER, L.TRACKER_HELP, "hideTracker")
 	y = y - h - 18
 
 	local savedLabel = Text(win, "GameFontNormal", C.accent)
