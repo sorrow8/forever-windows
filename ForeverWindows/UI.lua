@@ -405,6 +405,7 @@ local function Refresh()
 	widgets.lock:SetActive(enabled)
 	widgets.tracker.switch:SetChecked(db.hideTracker)
 	widgets.tracker:SetActive(enabled)
+	widgets.minimap.switch:SetChecked(db.minimapShow)
 	LayoutList()
 end
 ns.RefreshUI = Refresh
@@ -479,6 +480,8 @@ local function Build()
 	widgets.lock, h = ToggleRow(win, y, L.LOCK, L.LOCK_HELP, "locked")
 	y = y - h - 10
 	widgets.tracker, h = ToggleRow(win, y, L.TRACKER, L.TRACKER_HELP, "hideTracker")
+	y = y - h - 10
+	widgets.minimap, h = ToggleRow(win, y, L.MINIMAP, L.MINIMAP_HELP, "minimapShow")
 	y = y - h - 18
 
 	local savedLabel = Text(win, "GameFontNormal", C.accent)
@@ -580,4 +583,8 @@ end
 function ns.InitUI()
 	pcall(RegisterOptions)
 	ns.OnChange(Refresh)
+	if ns.UpdateMinimapButton then
+		ns.OnChange(ns.UpdateMinimapButton)
+		ns.UpdateMinimapButton()
+	end
 end

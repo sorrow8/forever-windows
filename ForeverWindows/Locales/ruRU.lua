@@ -77,4 +77,9 @@ ns.LOCALES.ruRU = {
 	W_ItemTextFrame = "Книга и письмо",
 	W_TabardFrame = "Гербовая накидка",
 	W_PetStableFrame = "Стойла",
+
+	MINIMAP = "Кнопка у миникарты",
+	MINIMAP_HELP = "Показывать кнопку аддона по краю миникарты.",
+	MM_LEFT = "ЛКМ: настройки",
+	MM_RIGHT = "ПКМ: включить или выключить",
 }

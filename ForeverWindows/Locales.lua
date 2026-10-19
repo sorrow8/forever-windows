@@ -83,6 +83,11 @@ local L = {
 	W_ItemTextFrame = "Book and letter",
 	W_TabardFrame = "Tabard",
 	W_PetStableFrame = "Stable",
+
+	MINIMAP = "Minimap button",
+	MINIMAP_HELP = "Show the addon's button at the edge of the minimap.",
+	MM_LEFT = "Left-click: settings",
+	MM_RIGHT = "Right-click: turn on or off",
 }
 
 ns.LOCALES = {}

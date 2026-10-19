@@ -13,6 +13,7 @@ Forever Windows lets you drag any game window where you like, and it opens there
 - Optional: hide the quest tracker
 - Protected windows move into place right after combat
 - English and Russian
+- Minimap button
 - Settings: `/fw`
 
 **Install:** unzip the `ForeverWindows` folder into `World of Warcraft/_forever_/Interface/AddOns/` and restart the game.

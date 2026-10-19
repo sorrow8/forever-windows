@@ -11,6 +11,8 @@ local DEFAULTS = {
 	mode = "anywhere", -- anywhere | shift
 	locked = false,
 	hideTracker = false, -- the quest tracker at the right edge of the screen
+	minimapShow = true,
+	minimapAngle = 150,
 }
 
 local PREFIX = "|cffebbd61Forever Windows|r: "

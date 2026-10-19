@@ -1,3 +1,7 @@
+# 1.1.3
+
+- Minimap button: left-click opens the settings, right-click turns the addon on or off, and a switch in the window hides it. It's made with LibDBIcon, so minimap button collectors (like Leatrix Plus) take it in with its own tooltip.
+
 # 1.1.2
 
 - Moved windows are marked so the game keeps no copy of their spot of its own (SetDontSavePosition), even when a drag is cut short.
