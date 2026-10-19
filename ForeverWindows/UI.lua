@@ -200,8 +200,13 @@ end
 -- Window names for the list -----------------------------------------------------
 
 local function DisplayName(name)
-	local bag = name:match("^ContainerFrame(%d+)$")
-	if bag then return L.W_ContainerFrame:format(tonumber(bag)) end
+	-- bag spots are kept by bag ID (see ns.BagKey)
+	local bag = tonumber(name:match("^Bag(%-?%d+)$"))
+	if bag then
+		if bag == 0 then return L.W_Backpack end
+		if bag == KEYRING_CONTAINER then return L.W_Keyring end
+		return L.W_ContainerFrame:format(bag)
+	end
 	return L["W_" .. name] or (name:gsub("Frame$", ""))
 end
 
@@ -562,7 +567,8 @@ local function RegisterOptions()
 	text:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -8)
 	text:SetText(L.OPTIONS_TEXT)
 	local button = TextButton(panel, L.OPTIONS_OPEN, function()
-		if SettingsPanel and SettingsPanel:IsShown() then HideUIPanel(SettingsPanel) end
+		-- HideUIPanel is protected in combat; the window opens over the Options then
+		if SettingsPanel and SettingsPanel:IsShown() and not InCombatLockdown() then HideUIPanel(SettingsPanel) end
 		if not win or not win:IsShown() then ns.ToggleWindow() end
 	end)
 	button:SetPoint("TOPLEFT", text, "BOTTOMLEFT", 0, -14)

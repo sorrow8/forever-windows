@@ -17,6 +17,12 @@ local DEFAULTS = {
 
 local PREFIX = "|cffebbd61Forever Windows|r: "
 
+-- anchor points SetPoint takes; anything else in saved data would make it throw
+local POINTS = {
+	TOPLEFT = true, TOP = true, TOPRIGHT = true, LEFT = true, CENTER = true,
+	RIGHT = true, BOTTOMLEFT = true, BOTTOM = true, BOTTOMRIGHT = true,
+}
+
 local db
 local listeners = {}
 
@@ -88,13 +94,27 @@ function events.ADDON_LOADED(name)
 		-- damaged or foreign saved data must not break a window
 		if type(db.positions) ~= "table" then db.positions = {} end
 		for name, pos in pairs(db.positions) do
-			if type(name) ~= "string" or type(pos) ~= "table" or type(pos[1]) ~= "string" or type(pos[2]) ~= "string"
+			if type(name) ~= "string" or type(pos) ~= "table" or not POINTS[pos[1]] or not POINTS[pos[2]]
 				or type(pos[3]) ~= "number" or type(pos[4]) ~= "number" then
 				db.positions[name] = nil
 			end
 		end
+		-- Bag spots used to be kept per ContainerFrameN, which the game hands
+		-- to any bag; now they belong to the bag. Frame 1 only ever shows the
+		-- backpack, frame N most often bag N - 1.
+		local moved = {}
+		for name, pos in pairs(db.positions) do
+			local n = tonumber(name:match("^ContainerFrame(%d+)$"))
+			if n then
+				db.positions[name] = nil
+				if n >= 1 then moved[ns.BagKey(n - 1)] = pos end
+			end
+		end
+		for key, pos in pairs(moved) do
+			if db.positions[key] == nil then db.positions[key] = pos end
+		end
 		local win = db.win
-		if win ~= nil and not (type(win) == "table" and type(win[1]) == "string" and type(win[2]) == "string"
+		if win ~= nil and not (type(win) == "table" and POINTS[win[1]] and POINTS[win[2]]
 			and type(win[3]) == "number" and type(win[4]) == "number") then
 			db.win = nil
 		end

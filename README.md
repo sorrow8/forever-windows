@@ -16,7 +16,7 @@ Forever Windows lets you drag any game window where you like, and it opens there
 - Minimap button
 - Settings: `/fw`
 
-**Install:** unzip the `ForeverWindows` folder into `World of Warcraft/_forever_/Interface/AddOns/` and restart the game.
+**Install:** unzip the `ForeverWindows` folder into `World of Warcraft/_forever_/Interface/AddOns/` and type `/reload` in the game.
 
 MIT license.
 

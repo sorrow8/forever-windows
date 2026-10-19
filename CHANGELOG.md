@@ -1,3 +1,12 @@
+# 1.1.4
+
+- The minimap button stays where a minimap button collector (like Leatrix Plus) put it: it was put back on the minimap's edge at every fight.
+- With separate bags, each bag keeps its own spot whichever window the game shows it in (Backpack, Bag 1-4, Keyring); spots saved per bag window are moved over once.
+- A window saved near an edge stays on screen after a UI scale or resolution change.
+- A drag a fight cut into ends where you let go, not where the cursor was when the fight ended.
+- With the addon off, other switches no longer move windows; protected windows go back to the game's spot after combat.
+- New names in the list: Game Menu, Game Settings, Support, Edit Mode, Chat Settings, AddOns. The combat message no longer promises a move that doesn't happen, and the Options page button no longer errors in combat.
+
 # 1.1.3
 
 - Minimap button: left-click opens the settings, right-click turns the addon on or off, and a switch in the window hides it. It's made with LibDBIcon, so minimap button collectors (like Leatrix Plus) take it in with its own tooltip.

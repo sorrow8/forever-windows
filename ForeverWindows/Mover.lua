@@ -12,6 +12,9 @@ local L = ns.L
 -- Some windows are protected and cannot be moved by an addon in combat.
 -- Those are left to the game during a fight and put in place right after.
 --
+-- A bag's spot belongs to the bag, not to the ContainerFrame showing it: the
+-- game hands any bag the first free frame.
+--
 -- Spots are kept in UIParent units, not in the window's own scale: the game
 -- shrinks some windows on the fly (the bags while the bank is open, panels
 -- that don't fit the screen), and a spot in the window's own units would
@@ -31,7 +34,8 @@ local original = {}       -- [frame] = the game's anchor before we first moved i
 local pendingApply = {}   -- [frame] = true: protected, waits for combat to end
 local pendingInstall = {} -- [name] = true: protected, waits for combat to end
 local warned = {}         -- [frame] = true: the combat message was shown once
-local pendingStop = {}    -- [frame] = "save" or "drop": a drag a fight cut into, ended after it
+local pendingStop = {}    -- [frame] = the spot let go at, "save" or "drop": a drag a fight cut into, ended after it
+local pendingUnplace = {} -- [frame] = true: protected, goes back to the game's spot after combat
 local applying = false
 
 local function DB() return ns.DB() end
@@ -51,6 +55,19 @@ local function Ratio(frame)
 	return UIParent:GetEffectiveScale() / frame:GetEffectiveScale()
 end
 
+-- A bag's spot is kept under its bag ID: "Bag0" is the backpack.
+function ns.BagKey(id) return "Bag" .. id end
+
+-- The key of the window's saved spot: the bag for a bag frame, else its name.
+local function Key(frame)
+	local name = names[frame]
+	if name:match("^ContainerFrame%d+$") and frame.GetBagID then
+		local id = frame:GetBagID()
+		if type(id) == "number" then return ns.BagKey(id) end
+	end
+	return name
+end
+
 -- The anchor the game gave the window, kept so a reset can put it back.
 local function Capture(frame)
 	if original[frame] then return end
@@ -61,7 +78,7 @@ end
 
 local function Apply(frame)
 	local db = DB()
-	local pos = db and db.enabled and db.positions[names[frame]]
+	local pos = db and db.enabled and db.positions[Key(frame)]
 	if type(pos) ~= "table" or type(pos[3]) ~= "number" or type(pos[4]) ~= "number" then return end
 	if moving[frame] or Maximized(frame) then return end
 	if Blocked(frame) then
@@ -70,18 +87,33 @@ local function Apply(frame)
 	end
 	Capture(frame)
 	local ratio = Ratio(frame)
+	local x, y = pos[3], pos[4]
+	-- A new UI scale or resolution can leave the spot off screen: the window
+	-- is kept on it (its top bar at least), the saved spot stays as it is.
+	if pos[1] == "TOPLEFT" and pos[2] == "BOTTOMLEFT" then
+		local width, height = frame:GetWidth() / ratio, frame:GetHeight() / ratio
+		x = math.max(0, math.min(x, UIParent:GetWidth() - width))
+		y = math.min(UIParent:GetHeight(), math.max(y, height))
+	end
 	applying = true
 	frame:ClearAllPoints()
-	frame:SetPoint(pos[1], UIParent, pos[2], pos[3] * ratio, pos[4] * ratio)
+	frame:SetPoint(pos[1], UIParent, pos[2], x * ratio, y * ratio)
 	applying = false
 end
 
-local function Save(frame)
+-- The window's top left, as a saved spot keeps it.
+local function Spot(frame)
 	local left, top = frame:GetLeft(), frame:GetTop()
 	if not (left and top) then return end
 	-- GetLeft/GetTop are in the window's own scale; kept in UIParent units
 	local ratio = Ratio(frame)
-	DB().positions[names[frame]] = { "TOPLEFT", "BOTTOMLEFT", left / ratio, top / ratio }
+	return { left / ratio, top / ratio }
+end
+
+local function Save(frame, spot)
+	spot = spot or Spot(frame)
+	if not spot then return end
+	DB().positions[Key(frame)] = { "TOPLEFT", "BOTTOMLEFT", spot[1], spot[2] }
 end
 
 local function OnDragStart(frame)
@@ -101,22 +133,23 @@ local function OnDragStart(frame)
 	frame:StartMoving()
 end
 
-local function EndDrag(frame, save)
+local function EndDrag(frame, save, spot)
 	frame:StopMovingOrSizing()
 	moving[frame] = nil
 	-- the game would also keep its own copy of the spot; ours is enough
 	pcall(frame.SetUserPlaced, frame, false)
-	if save then Save(frame) end
+	if save then Save(frame, spot) end
 	Apply(frame)
 	ns.Notify()
 end
 
 -- A protected window can't be let go of in combat (a fight that started
--- mid-drag): it is let go of right after the fight.
+-- mid-drag): it keeps following the cursor, so the spot it was let go at is
+-- kept now and saved right after the fight.
 local function OnDragStop(frame)
 	if not moving[frame] then return end
 	if Blocked(frame) then
-		pendingStop[frame] = "save"
+		pendingStop[frame] = Spot(frame) or "save"
 		return
 	end
 	EndDrag(frame, true)
@@ -176,34 +209,43 @@ function ns.Scan()
 	for _, name in ipairs(EXTRA) do Install(name) end
 end
 
-function ns.AfterCombat()
-	for frame, what in pairs(pendingStop) do
-		pendingStop[frame] = nil
-		if moving[frame] then EndDrag(frame, what == "save") end
-	end
-	for name in pairs(pendingInstall) do Install(name) end
-	for frame in pairs(pendingApply) do
-		pendingApply[frame] = nil
-		Apply(frame)
-	end
-end
-
 -- The game's own anchor back. Done for closed windows too: some (the Esc
 -- menu) are never placed again by the game.
 local function Unplace(frame)
 	local points = original[frame]
-	if not points or #points == 0 or Blocked(frame) or moving[frame] then return end
+	if not points or #points == 0 or moving[frame] then return end
+	if Blocked(frame) then
+		pendingUnplace[frame] = true
+		return
+	end
 	applying = true
 	frame:ClearAllPoints()
 	for _, p in ipairs(points) do frame:SetPoint(unpack(p)) end
 	applying = false
 end
 
+function ns.AfterCombat()
+	for frame, what in pairs(pendingStop) do
+		pendingStop[frame] = nil
+		if moving[frame] then EndDrag(frame, what ~= "drop", type(what) == "table" and what or nil) end
+	end
+	for name in pairs(pendingInstall) do Install(name) end
+	for frame in pairs(pendingUnplace) do
+		pendingUnplace[frame] = nil
+		Unplace(frame)
+	end
+	for frame in pairs(pendingApply) do
+		pendingApply[frame] = nil
+		Apply(frame)
+	end
+end
+
 -- Forget one window's spot; it goes back to where the game had it.
 function ns.ResetOne(name, quiet)
 	DB().positions[name] = nil
-	local frame = frames[name]
-	if frame then Unplace(frame) end
+	for frame in pairs(names) do
+		if Key(frame) == name then Unplace(frame) end
+	end
 	if not quiet then ns.Notify() end
 end
 
@@ -218,7 +260,17 @@ function ns.ApplyAll()
 		if frame:IsShown() then Apply(frame) end
 	end
 end
+
+-- Windows go back only when the addon is switched off: any other change
+-- while it is off (the minimap button) would snap them to stale anchors.
+local wasEnabled = true
 ns.OnChange(function()
 	local db = DB()
-	if db and not db.enabled then UnplaceAll() else ns.ApplyAll() end
+	if db and not db.enabled then
+		if wasEnabled then UnplaceAll() end
+		wasEnabled = false
+	else
+		wasEnabled = true
+		ns.ApplyAll()
+	end
 end)
