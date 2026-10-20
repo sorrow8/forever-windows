@@ -1,3 +1,10 @@
+# 1.1.5
+
+- Hide the quest tracker: the tracker turns invisible instead of being hidden, so the boss frames on the right of the screen can't end up with "action blocked". In Edit Mode it shows so you can move it.
+- A move that fails no longer stops later moves from working.
+- Long window names in the list get more room.
+- The Options button no longer closes the game's Options.
+
 # 1.1.4
 
 - The minimap button stays where a minimap button collector (like Leatrix Plus) put it: it was put back on the minimap's edge at every fight.
