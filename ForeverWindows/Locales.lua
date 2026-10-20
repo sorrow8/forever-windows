@@ -23,7 +23,7 @@ local L = {
 
 	SAVED = "Moved windows",
 	SAVED_NONE = "None yet. Open any window and drag it.",
-	RESET_ONE = "Reset position",
+	RESET_ONE = "Reset",
 	RESET_ONE_HELP = "This window opens at the game's own spot again.",
 	RESET_ALL = "Reset all",
 	CMD_HINT = "Open this window:",
