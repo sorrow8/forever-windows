@@ -18,8 +18,6 @@ Forever Windows lets you drag any game window where you like, and it opens there
 
 **Install:** unzip the `ForeverWindows` folder into `World of Warcraft/_forever_/Interface/AddOns/`. If the game is already running, type `/reload`.
 
-MIT license.
-
 ---
 
 **RU:** перетащи любое окно игры куда удобно, и дальше оно открывается там, без прыжков. Настройки: `/fw`.
