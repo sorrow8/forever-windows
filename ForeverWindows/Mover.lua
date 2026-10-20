@@ -95,9 +95,12 @@ local function Apply(frame)
 		x = math.max(0, math.min(x, UIParent:GetWidth() - width))
 		y = math.min(UIParent:GetHeight(), math.max(y, height))
 	end
+	-- an error here must not leave every later move ignored
 	applying = true
-	frame:ClearAllPoints()
-	frame:SetPoint(pos[1], UIParent, pos[2], x * ratio, y * ratio)
+	pcall(function()
+		frame:ClearAllPoints()
+		frame:SetPoint(pos[1], UIParent, pos[2], x * ratio, y * ratio)
+	end)
 	applying = false
 end
 
@@ -219,8 +222,10 @@ local function Unplace(frame)
 		return
 	end
 	applying = true
-	frame:ClearAllPoints()
-	for _, p in ipairs(points) do frame:SetPoint(unpack(p)) end
+	pcall(function()
+		frame:ClearAllPoints()
+		for _, p in ipairs(points) do frame:SetPoint(unpack(p)) end
+	end)
 	applying = false
 end
 

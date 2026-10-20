@@ -567,8 +567,8 @@ local function RegisterOptions()
 	text:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -8)
 	text:SetText(L.OPTIONS_TEXT)
 	local button = TextButton(panel, L.OPTIONS_OPEN, function()
-		-- HideUIPanel is protected in combat; the window opens over the Options then
-		if SettingsPanel and SettingsPanel:IsShown() and not InCombatLockdown() then HideUIPanel(SettingsPanel) end
+		-- the window opens over the Options (its strata is above theirs); closing
+		-- them from here would drop unsaved settings and run their code tainted
 		if not win or not win:IsShown() then ns.ToggleWindow() end
 	end)
 	button:SetPoint("TOPLEFT", text, "BOTTOMLEFT", 0, -14)
