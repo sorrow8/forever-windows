@@ -371,11 +371,12 @@ local function LayoutList()
 			row:SetSize(INNER, ROW_H)
 			row.bg = Tex(row, C.panel)
 			row.bg:SetAllPoints()
-			row.label = Text(row, "GameFontHighlight", C.text, INNER - 90)
-			row.label:SetPoint("LEFT", 10, 0)
 			row.reset = TextButton(row, L.RESET_ONE, function() ns.ResetOne(row.name) end)
 			row.reset:SetHeight(20)
 			row.reset:SetPoint("RIGHT", -3, 0)
+			-- the name gets the room the button leaves, in any language
+			row.label = Text(row, "GameFontHighlight", C.text, INNER - row.reset:GetWidth() - 23)
+			row.label:SetPoint("LEFT", 10, 0)
 			Tooltip(row.reset, L.RESET_ONE, L.RESET_ONE_HELP)
 			widgets.rows[i] = row
 		end
